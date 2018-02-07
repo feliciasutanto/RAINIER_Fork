@@ -118,6 +118,7 @@ const double g_dNu = 0.5; // See Koehler PRL105,072502(2010): measured nu~0.5
 // choose one:
 #define bE1_GenLor // General Lorentzian
 //#define bE1_EGLO // Enhanced Generalized Lorentzian for A>148
+//#define b_GenLor_CT // Use a constant temperature in EGLO
 //#define bE1_KMF // Kadmenskij Markushev Furman model
 //#define bE1_KopChr // Kopecky Chrien model
 //#define bE1_StdLor // standard Lorentzian
@@ -125,6 +126,9 @@ const double g_adSigE1[] = {317.00, 0.00}; // mb magnitude
 const double g_adEneE1[] = { 15.05, 0.01}; // MeV centroid energy, non-zero
 const double g_adGamE1[] = {  5.30, 0.00}; // MeV GDR width
 //                                  ^^^^ for a 2nd resonance
+#ifdef b_GenLor_CT // Use a constant temperature in EGLO
+const double g_GenLor_CT = 0.44; // in MeV
+#endif
 
 ///// fM1 /////
 //#define bM1StrUpbend // Oslo observed low energy upbend aka enhancement
@@ -814,6 +818,9 @@ const double g_dKX2 = 5.204155555E-08; // mb^-1 MeV^-2;  = 1/(5*(pi*hbar*c)^2)
 double GetTemp(double dEx) {
   double dEff = GetEff(dEx);
   double dLDa = GetLDa(dEx);
+  #ifdef b_GenLor_CT
+  return g_GenLor_CT;
+  #endif
   return sqrt(dEff / dLDa);
 } // GetTemp
 
