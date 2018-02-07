@@ -36,9 +36,9 @@
 
 ////////////////////// Discrete Settings ///////////////////////////////////////
 //#define bPrintLvl // print both discrete and constructed lvl schemes
-const int g_nZ = 60; // proton number
-const int g_nAMass = 144; // proton + neutron number
-const int g_nDisLvlMax = 16; // only trust level scheme to here, sets ECrit
+const int g_nZ = 94; // proton number
+const int g_nAMass = 240; // proton + neutron number
+const int g_nDisLvlMax = 18; // only trust level scheme to here, sets ECrit
 
 ///////////////////// Constructed Level Scheme Settings ////////////////////////
 ///// Bins /////
@@ -55,18 +55,18 @@ int g_nConEBin;
 
 ///// Level Density, LD, model /////
 // choose one, fill in corresponding parameters
-//#define bLD_CTM
+// #define bLD_CTM
 #ifdef bLD_CTM
-const double g_dTemp =  0.48473; // MeV
-const double g_dE0   = -1.31817; // MeV
-const double g_dDeuPair = 0.62834; // MeV; 
+const double g_dTemp =  0.44; // MeV
+const double g_dE0   =  0.12; // MeV
+const double g_dDeuPair = 1.336; // MeV; // taken from ROBIN: Pa_prime
 //const double g_dE0   = -1.004 + 0.5 * g_dDeuPair; // MeV; von egidy09 fit
 #endif
 
 #define bLD_BSFG
 #ifdef bLD_BSFG
 const double g_dE1 = 0.968; // MeV, excitation energy shift
-const double g_dDeuPair = 2.698; // MeV; can get from ROBIN: Pa_prime
+const double g_dDeuPair = 1.336; // MeV; can get from ROBIN: Pa_prime
 //const double g_dE1 = g_dDeuPair * 0.5 - 0.381; // von Egidy fit
 #endif
 // deuteron pairing energy from mass table, related to backshift in BSFG or CTM
@@ -117,14 +117,14 @@ const double g_dNu = 0.5; // See Koehler PRL105,072502(2010): measured nu~0.5
 ///// fE1 /////
 // choose one:
 #define bE1_GenLor // General Lorentzian
-//#define bE1_EGLO // Enhanced Generalized Lorentzian for A>148
-//#define b_GenLor_CT // Use a constant temperature in EGLO
+#define bE1_EGLO // Enhanced Generalized Lorentzian for A>148
+#define b_GenLor_CT // Use a constant temperature in EGLO
 //#define bE1_KMF // Kadmenskij Markushev Furman model
 //#define bE1_KopChr // Kopecky Chrien model
 //#define bE1_StdLor // standard Lorentzian
-const double g_adSigE1[] = {317.00, 0.00}; // mb magnitude
-const double g_adEneE1[] = { 15.05, 0.01}; // MeV centroid energy, non-zero
-const double g_adGamE1[] = {  5.30, 0.00}; // MeV GDR width
+const double g_adSigE1[] = {290., 340.}; // mb magnitude
+const double g_adEneE1[] = { 11.3, 14.15}; // MeV centroid energy, non-zero
+const double g_adGamE1[] = {  3.2, 5.5}; // MeV GDR width
 //                                  ^^^^ for a 2nd resonance
 #ifdef b_GenLor_CT // Use a constant temperature in EGLO
 const double g_GenLor_CT = 0.44; // in MeV
@@ -154,8 +154,8 @@ const double g_dICCMax = 1.0; // MeV; Uses last Ebin ICC value for higher E
 
 ////////////////////// Run Settings ////////////////////////////////////////////
 const int g_nReal = 1; // number of realizations of nuclear level scheme
-const int g_nEvent = 1e4; // number of events per excitation and realization
-const int g_nEvUpdate = 1e2; // print progress to screen at this interval
+const int g_nEvent = 1e6; // number of events per excitation and realization
+const int g_nEvUpdate = 1e4; // print progress to screen at this interval
 
 ////////////////////// Excitation Settings /////////////////////////////////////
 // choose one, fill in corresponding params:
@@ -193,8 +193,8 @@ const double g_dExRes = 0.2; // excitation resolution on g_ah2ExEg for analysis
 #endif
 
 #ifdef bExFullRxn // from a TALYS output file if available
-const double g_dExIMax = 16.0; // MeV; above max population energy
-const char popFile[] = "Nd144Pop.dat"; // made from TALYS "outpopulation y"
+const double g_dExIMax = 7.5; // MeV; above max population energy
+const char popFile[] = "240PuPop_combEB06.dat"; // made from TALYS "outpopulation y"
 // make sure to match # of discrete bins
 const double g_dExRes = 0.2 / 2.355; // excitation resolution on g_ah2ExEg
 #endif
@@ -272,16 +272,20 @@ const double g_dSigE2 = 1.5e-4 * pow(g_nZ,2.0) * g_dEneE2 / (pow(g_nAMass, 1/3.0
 #endif
 
 const double g_dKX1 = 8.673592583E-08; // mb^-1 MeV^-2;  = 1/(3*(pi*hbar*c)^2) 
-const double g_adEneM1[] = {41.0 * pow(g_nAMass,-1/3.0), 0.01}; // MeV cent E
-const double g_adGamM1[] = {4.00                       , 0.00}; // MeV GDR width
-const double g_adSigM1[] = {
-  // yes it is this complicated and phenomenological: fM1 = 1.58e-9 A^0.47
-  1.58e-9 * pow(g_nAMass, 0.47) / (g_dKX1 * 7.0 * pow(g_adGamM1[0],2)) 
-  * ( pow( pow(7.0,2) - pow(g_adEneM1[0],2),2) + pow(7.0 * g_adGamM1[0],2) )
-                                                       , 0.00}; // mb magnitude
-//                                                       ^^^^ for a 2nd res.
+// const double g_adEneM1[] = {41.0 * pow(g_nAMass,-1/3.0), 0.01}; // MeV cent E
+// const double g_adGamM1[] = {4.00                       , 0.00}; // MeV GDR width
+// const double g_adSigM1[] = {
+//   // yes it is this complicated and phenomenological: fM1 = 1.58e-9 A^0.47
+//   1.58e-9 * pow(g_nAMass, 0.47) / (g_dKX1 * 7.0 * pow(g_adGamM1[0],2)) 
+//   * ( pow( pow(7.0,2) - pow(g_adEneM1[0],2),2) + pow(7.0 * g_adGamM1[0],2) )
+//                                                        , 0.00}; // mb magnitude
+// //                                                       ^^^^ for a 2nd res.
 // I might put in the RIPL ratio formula as well: 
 // just enter your own value for SigM1 if you have something else
+const double g_adEneM1[] = {1.9, 2.7}; // MeV cent E
+const double g_adGamM1[] = {0.60, 0.75}; // MeV GDR width
+const double g_adSigM1[] = {0.4, 0.35}; // mb magnitude
+//                                                       ^^^^ for a 2nd res.
 
 #ifdef bExSelect
 const int g_nStateI  = sizeof(g_adExI)     / sizeof(double);
@@ -414,7 +418,7 @@ void PrintDisLvl() {
 TH2D *g_h2PopDist;
 #ifdef bExFullRxn
 /////////////////////// TALYS Rxn Population File //////////////////////////////
-const int g_nExPopI = 71; // bins 0-70
+const int g_nExPopI = 83; // bins 0-70
 const int g_nSpPopIBin = 10; // spins 0-9, havent tested with half-int yet
 void ReadPopFile() {
   cout << "Reading Population File" << endl;
